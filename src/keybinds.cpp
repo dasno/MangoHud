@@ -11,7 +11,7 @@
 #include "fps_metrics.h"
 #include "fps_limiter.h"
 
-Clock::time_point last_f2_press, toggle_fps_limit_press, toggle_preset_press, last_f12_press, reload_cfg_press, last_upload_press;
+Clock::time_point last_f2_press, toggle_fps_limit_press, toggle_preset_press, last_f12_press, reload_cfg_press, last_upload_press, toggle_ecomode_press;
 
 void check_keybinds(struct overlay_params& params){
    auto real_params = get_params();
@@ -23,6 +23,7 @@ void check_keybinds(struct overlay_params& params){
    auto elapsedF12 = now - last_f12_press;
    auto elapsedReloadCfg = now - reload_cfg_press;
    auto elapsedUpload = now - last_upload_press;
+   auto elapsedEcoModeToggle = now - toggle_ecomode_press;
 
    static Clock::time_point last_check;
    if (now - last_check < 100ms)
@@ -46,6 +47,12 @@ void check_keybinds(struct overlay_params& params){
        keys_are_pressed(real_params->toggle_fps_limit)) {
       toggle_fps_limit_press = now;
       fps_limiter->next_limit();
+   }
+
+   if (elapsedEcoModeToggle >= keyPressDelay &&
+       keys_are_pressed(real_params->toggle_ecomode)) {
+      toggle_ecomode_press = now;
+      fps_limiter->toggle_ecomode();
    }
 
    if (elapsedPresetToggle >= keyPressDelay &&

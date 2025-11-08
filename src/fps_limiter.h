@@ -9,6 +9,7 @@ class fpsLimiter {
         size_t fps_limits_idx = 0;
         int64_t frame_start = 0;
         int64_t frame_end = 0;
+        bool ecomode_enabled = false;
 
         int64_t calc_sleep(int64_t start, int64_t end) {
             if (target <= 0 || start <= 0)
@@ -68,19 +69,39 @@ class fpsLimiter {
         }
 
         void next_limit() {
+            float next_target = 0.0; 
             auto& v = get_params()->fps_limit;
             if (v.empty())
                 return;
 
-            fps_limits_idx = (fps_limits_idx + 1) % v.size();
-            auto next_target = v[fps_limits_idx];
+            if (ecomode_enabled)
+                next_target = get_params()->eco_mode_limit;
+            else {
+                fps_limits_idx = (fps_limits_idx + 1) % v.size();
+                next_target = v[fps_limits_idx];
+            }
+            
             target = next_target <= 0.0f ? 0 : int64_t(1'000'000'000.0f / next_target);
             SPDLOG_DEBUG("Changed fps limit to {}", next_target);
         }
 
         int current_limit() {
             auto& v = get_params()->fps_limit;
+            if (ecomode_enabled)
+                return get_params()->eco_mode_limit;
             return v[fps_limits_idx];
+        }
+
+        void toggle_ecomode() {
+            (current_limit() > get_params()->eco_mode_limit || current_limit() == 0) ? ecomode_enabled = true : ecomode_enabled = false;
+            if (!ecomode_enabled)
+                fps_limits_idx = fps_limits_idx - 1;
+            
+            next_limit();
+        }
+
+        bool get_ecomode() {
+            return ecomode_enabled;
         }
 };
 

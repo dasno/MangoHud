@@ -1116,7 +1116,7 @@ void HudElements::show_fps_limit(){
             ImguiNextColumnOrNewRow();
             right_aligned_text(HUDElements.colors.text, HUDElements.ralign_width, "%s", method);
             ImguiNextColumnOrNewRow();
-            right_aligned_text(HUDElements.colors.text, HUDElements.ralign_width, "%i", fps_limiter->current_limit());
+            right_aligned_text(HUDElements.colors.text, HUDElements.ralign_width, "%i %s", fps_limiter->current_limit(), fps_limiter->get_ecomode() ? "(ECO MODE)" : "");
             ImGui::PopFont();
         }
     }

@@ -162,6 +162,7 @@ parse_string_to_keysym_vec(const char *str)
 #define parse_toggle_fps_limit      parse_string_to_keysym_vec
 #define parse_toggle_preset         parse_string_to_keysym_vec
 #define parse_reset_fps_metrics     parse_string_to_keysym_vec
+#define parse_eco_mode_toggle       parse_string_to_keysym_vec
 
 #else
 #define parse_toggle_hud(x)            {}
@@ -229,6 +230,18 @@ parse_fps_limit(const char *str)
    }
 
    return fps_limit;
+}
+
+static float_t
+parse_eco_mode_limit(const char *str)
+{
+   float as_float = 0.0;
+   try {
+         as_float = std::stof(str);
+   } catch (const std::invalid_argument&) {
+      SPDLOG_ERROR("invalid ecomode_limit value: '{}'", str);
+   }
+   return as_float;
 }
 
 static enum fps_limit_method
@@ -829,6 +842,7 @@ static void set_param_defaults(struct overlay_params *params){
    params->enabled[OVERLAY_PARAM_ENABLED_temp_fahrenheit] = false;
    params->enabled[OVERLAY_PARAM_ENABLED_duration] = false;
    params->enabled[OVERLAY_PARAM_ENABLED_frame_timing_detailed] = false;
+   params->enabled[OVERLAY_PARAM_ENABLED_toggle_ecomode] = false;
    params->fps_sampling_period = 500000000; /* 500ms */
    params->width = 0;
    params->height = 140;
@@ -880,6 +894,7 @@ static void set_param_defaults(struct overlay_params *params){
    params->table_columns = 3;
    params->text_outline_color = 0x000000;
    params->text_outline_thickness = 1.5;
+   params->eco_mode_limit = 30.0;
 }
 
 static std::string verify_pci_dev(std::string pci_dev) {
@@ -929,6 +944,7 @@ parse_overlay_config(struct overlay_params *params,
    params->reload_cfg = { XKB_KEY_Shift_L, XKB_KEY_F4 };
    params->upload_log = { XKB_KEY_Shift_L, XKB_KEY_F3 };
    params->upload_logs = { XKB_KEY_Control_L, XKB_KEY_F3 };
+   params->toggle_ecomode = { XKB_KEY_Shift_L, XKB_KEY_F8 };
 #endif
 
 #ifdef _WIN32

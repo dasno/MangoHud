@@ -130,6 +130,7 @@ struct Tracepoint;
    OVERLAY_PARAM_BOOL(flip_efficiency)               \
    OVERLAY_PARAM_BOOL(gpu_power_limit)               \
    OVERLAY_PARAM_BOOL(dx_api)                        \
+   OVERLAY_PARAM_BOOL(toggle_ecomode)                \
    OVERLAY_PARAM_CUSTOM(fps_sampling_period)         \
    OVERLAY_PARAM_CUSTOM(output_folder)               \
    OVERLAY_PARAM_CUSTOM(output_file)                 \
@@ -148,6 +149,7 @@ struct Tracepoint;
    OVERLAY_PARAM_CUSTOM(no_display)                  \
    OVERLAY_PARAM_CUSTOM(control)                     \
    OVERLAY_PARAM_CUSTOM(fps_limit)                   \
+   OVERLAY_PARAM_CUSTOM(eco_mode_limit)              \
    OVERLAY_PARAM_CUSTOM(fps_limit_method)            \
    OVERLAY_PARAM_CUSTOM(vsync)                       \
    OVERLAY_PARAM_CUSTOM(gl_vsync)                    \
@@ -286,6 +288,7 @@ struct overlay_params {
    int control;
    uint32_t fps_sampling_period; /* ns */
    std::vector<float> fps_limit;
+   float eco_mode_limit;
    enum fps_limit_method fps_limit_method;
    bool help;
    bool no_display;
@@ -328,6 +331,7 @@ struct overlay_params {
    std::vector<KeySym> upload_logs;
    std::vector<KeySym> toggle_hud_position;
    std::vector<KeySym> reset_fps_metrics;
+   std::vector<KeySym> toggle_ecomode;
    std::string time_format, output_folder, output_file;
    std::string pci_dev;
    std::string media_player_name;
